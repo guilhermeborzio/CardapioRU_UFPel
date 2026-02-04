@@ -1,0 +1,31 @@
+name: Enviar Cardapio RU
+
+on:
+  schedule:
+    # Roda todos os dias às 13:00 UTC (10:00 Horário de Brasília)
+    - cron: '0 13 * * *'
+  # Permite rodar manualmente na aba "Actions" para testes
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar Dependências
+        run: |
+          pip install -r requirements.txt
+
+      - name: Executar Script
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python main.py
